@@ -26,6 +26,13 @@ jobs:
       run: |
         python kayo_scraper.py
 
+    - name: Debug file changes
+      run: |
+        ls -l kayo_channels.m3u
+        ls -l kayo_epg.xml
+        cat kayo_channels.m3u
+        cat kayo_epg.xml
+
     - name: Commit changes
       run: |
         git config --local user.email "action@github.com"
@@ -33,5 +40,6 @@ jobs:
         
         # Check if files have changed
         git add kayo_channels.m3u kayo_epg.xml
+        git status
         git diff --cached --quiet || git commit -m "Update Kayo playlist and EPG"
         git push
