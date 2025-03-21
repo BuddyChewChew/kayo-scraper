@@ -1,0 +1,4 @@
+requests==2.31.0
+gzip==3.0.4
+xmltodict==0.13.0
+dateutil==2.8.2
