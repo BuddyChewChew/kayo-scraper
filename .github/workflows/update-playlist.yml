@@ -27,13 +27,18 @@ jobs:
         python kayo_scraper.py
 
     - name: Commit changes
+      env:
+        ACTIONS_PAT: ${{ secrets.ACTIONS_PAT }}
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         
         # Check if files have changed
         git add kayo_channels.m3u kayo_epg.xml
-        git diff --cached --quiet || git commit -m "Update Kayo playlist and EPG" && git push
+        git diff --cached --quiet || git commit -m "Update Kayo playlist and EPG"
+
+        # Authenticate using the PAT and push changes
+        git push https://x-access-token:${{ secrets.ACTIONS_PAT }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
 
     - name: Clean repository history
       if: github.event_name == 'schedule'
