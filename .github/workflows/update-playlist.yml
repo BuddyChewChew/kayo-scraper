@@ -1,0 +1,49 @@
+name: Update Kayo Playlist
+
+on:
+  schedule:
+    - cron: '0 */8 * * *'  # Run every 8 hours
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  update-playlist:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+
+    - name: Run scraper
+      run: |
+        python kayo_scraper.py
+
+    - name: Commit changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        # Check if files have changed
+        git diff --exit-code
+        if [ $? -ne 0 ]; then
+          git add kayo_channels.m3u kayo_epg.xml
+          git commit -m "Update Kayo playlist and EPG"
+          git push
+        fi
+
+    - name: Clean repository history
+      if: github.event_name == 'schedule'
+      run: |
+        # Keep only the latest commit
+        git reset --hard HEAD~1
+        git add .
+        git commit -m "Clean history"
+        git push -f
