@@ -26,6 +26,7 @@ class KayoScraper:
                 if 'stream' in channel:
                     f.write(f"#EXTINF:-1 group-title=\"Kayo\" tvg-id=\"{channel['id']}\" tvg-name=\"{channel['name']}\" tvg-logo=\"{channel.get('logo', '')}\",{channel['name']}\n")
                     f.write(f"{channel['stream']}\n")
+        print(f"M3U file generated with {len(channels)} channels.")
 
     def generate_epg(self, channels):
         """Generate EPG XML file"""
@@ -67,6 +68,7 @@ class KayoScraper:
         # Write EPG to file
         with open(self.epg_file, 'w', encoding='utf-8') as f:
             f.write(xmltodict.unparse(epg, pretty=True))
+        print("EPG file generated.")
 
     def run(self):
         """Main function to run the scraper"""
