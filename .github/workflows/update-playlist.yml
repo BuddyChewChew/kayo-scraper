@@ -32,12 +32,8 @@ jobs:
         git config --local user.name "GitHub Action"
         
         # Check if files have changed
-        git diff --exit-code
-        if [ $? -ne 0 ]; then
-          git add kayo_channels.m3u kayo_epg.xml
-          git commit -m "Update Kayo playlist and EPG"
-          git push
-        fi
+        git add kayo_channels.m3u kayo_epg.xml
+        git diff --cached --quiet || git commit -m "Update Kayo playlist and EPG" && git push
 
     - name: Clean repository history
       if: github.event_name == 'schedule'
